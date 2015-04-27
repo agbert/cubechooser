@@ -1,0 +1,20 @@
+<head>
+  <title>CubeChooser</title>
+</head>
+
+<body>
+  <h1>Welcome to CubeChooser!</h1>
+
+  {{> hello}}
+</body>
+
+<template name="hello">
+	{{> cubes}}
+</template>
+
+<template name="cubes">
+	<h2>Cubes</h2>
+	{{#each cubes}}
+		<img src="/cubes/{{name}}" width="213">
+	{{/each}}
+</template>

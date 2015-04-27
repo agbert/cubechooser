@@ -14,7 +14,7 @@
 
 <template name="cubes">
 	<h2>Cubes</h2>
-	<script>var screenWidth = screen.width/3.1;</script>
+	<script>var screenWidth = Math.round(screen.width/3.1);</script>
 	{{#each cubes}}
 		<img src="/cubes/{{name}}" onload="this.width=screenWidth;">
 	{{/each}}

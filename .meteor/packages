@@ -8,3 +8,6 @@ meteor-platform
 insecure
 cfs:standard-packages
 cfs:filesystem
+tomi:upload-server
+tomi:upload-jquery
+iron:router

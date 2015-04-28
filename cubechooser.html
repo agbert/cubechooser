@@ -4,19 +4,27 @@
   <meta name=“viewport” content="initial-scale=1.0">
 </head>
 
-<body>
-  <h1>Welcome to CubeChooser!</h1>
-
-  {{> hello}}
-</body>
-
 <template name="hello">
+	<h1>Welcome to CubeChooser!</h1>
 	{{> cubes}}
 </template>
 
 <template name="cubes">
-	<h2>Cubes</h2>
+	<h2>Random Cubes</h2>
 	<script>var screenWidth = Math.round(screen.width/3.1);</script>
+	{{#each cubes}}
+		<img src="/cubes/{{name}}" onload="this.width=screenWidth; this.height=screenWidth;">
+	{{/each}}
+</template>
+
+<template name="list">
+    {{> upload_bootstrap contentType='images' fileTypes='.jpg,.png,.gif' multiple=true }}
+	{{> allCubes}}
+</template>
+
+<template name="allCubes">
+	<h2>All Cubes</h2>
+	<script>var screenWidth = 410;</script>
 	{{#each cubes}}
 		<img src="/cubes/{{name}}" onload="this.width=screenWidth; this.height=screenWidth;">
 	{{/each}}

@@ -1,11 +1,13 @@
 Cubes = new Mongo.Collection('cubes');
 
 if (Meteor.isClient) {
-  
+	Router.map( function () {
+	  this.route('hello', {path: '/'});
+	  this.route('list');
+	});  
 	// counter starts at 0
 	Session.setDefault('counter', 0);
   
-
 	Template.cubes.helpers({
 		cubes: function() {
 			icubes = [];
@@ -18,6 +20,16 @@ if (Meteor.isClient) {
 					icubes.push(icube);
 				}
 			}
+			if (typeof console !== 'undefined') {
+				console.log('icubes:'+icubes.length);
+			}
+			return icubes; //Cubes.find({});
+		}
+	});
+
+	Template.allCubes.helpers({
+		cubes: function() {
+			icubes = Cubes.find({});
 			if (typeof console !== 'undefined') {
 				console.log('icubes:'+icubes.length);
 			}
@@ -52,7 +64,7 @@ if (Meteor.isServer) {
 	//Inspector.runIfDebugging();
 		Cubes.remove({});
 		var fs = Npm.require('fs');
-		var dir = "../../../../../public/cubes/";//process.cwd()+"/../web.browser/app/public/cubes";
+		var dir = process.env.PWD +"/public/cubes/";
 		var files = fs.readdirSync(dir);
 		console.log("loading Foo start");
 		console.log("file count:"+files.length);
@@ -72,7 +84,50 @@ if (Meteor.isServer) {
 				console.log("not inserted");
 			}
 		}
-		console.log("loading Foo end");
+		var icubes = Cubes.find({});
+		console.log("loading Foo end:"+icubes.count());
+		console.log("Path:"+process.env.PWD);
+		
+		UploadServer.init({
+		    tmpDir: process.env.PWD +'/public/tmp',
+		    uploadDir: process.env.PWD +'/public/cubes/',
+//		    getDirectory: function(file, formData) {
+//				return formData.contentType;
+//		    },
+			imageTypes: /\.(gif\|jpe?g\|jpg\|png)$/i,
+			//imageVersions: {Big: {width: 640, height: 640}},
+			mimeTypes: {
+			    "jpeg": "image/jpeg",
+			    "jpg": "image/jpeg",
+			    "png": "image/png",
+			    "gif": "image/gif",
+			  },
+		    finished: function(file, folder, formFields) {
+				console.log('Write to database: ' + folder + '/' + file);
+		  		var fs = Npm.require('fs');
+		  		var dir = process.env.PWD + "/public/cubes/";
+		  		var files = fs.readdirSync(dir);
+		  		console.log("loading Foo2 start");
+		  		console.log("file count:"+files.length);
+		  		for (i=0;i<files.length;i++) {
+		  			console.log('file:'+files[i]);
+		  			icube = Cubes.findOne({name:files[i]});
+		  			if (typeof icube === "undefined") {
+		  				console.log(icube);
+		  				console.log("insert:"+files[i]);
+		  				Cubes.insert({
+		  					name:files[i],
+		  					cnt:i,
+		  					random_point: [Math.random(), 0]
+		  				});
+		  				console.log("inserted");
+		  			} else {
+		  				console.log("not inserted");
+		  			}
+		  		}
+		  		console.log("loading Foo2 end");
+		    }
+		  });
 
 	});
 }
